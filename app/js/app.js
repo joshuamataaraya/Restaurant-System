@@ -14,13 +14,13 @@ restaurantSystem.config(['$httpProvider', function($httpProvider) {
 restaurantSystem.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
-      when('/login', {
-        templateUrl: 'app/partials/login.html',
-        controller: 'loginCtrl'
-      }).
       when('/signin', {
         templateUrl: 'app/partials/signin.html',
         controller: 'signinCtrl'
+      }).
+      when('/signup', {
+        templateUrl: 'app/partials/signup.html',
+        controller: 'signupCtrl'
       }).
       when('/clientDetails', {
         templateUrl: 'app/partials/clientDetails.html',
@@ -51,6 +51,6 @@ restaurantSystem.config(['$routeProvider',
         controller: 'newRestaurantCtrl'
       }).
       otherwise({
-        redirectTo: '/login'
+        redirectTo: '/signin'
       });
   }]);

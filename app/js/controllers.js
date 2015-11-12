@@ -3,11 +3,32 @@
 /* Controllers */
 var restaurantSystem = angular.module('restaurantsControllers', []);
 
-restaurantSystem.controller('loginCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
+restaurantSystem.controller('signinCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
 
 });
-restaurantSystem.controller('signinCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
+restaurantSystem.controller('signupCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
 //new user
+  $scope.newClient=function(){
+    // var data={
+    //   idUsuario:1,
+    //   nombre:$scope.name,
+    //   apellido:$scope.lastName,
+    //   telefono:$scope.telphone,
+    //   cedula:11111111,
+    //   contrasenna:$scope.password
+    // };
+    alert("begin");
+    $http.post('/signup', $scope.client)
+    .then(function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+        alert('welldone')
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        alert('error on storage')
+      });
+  }
 });
 restaurantSystem.controller('clientDetailsCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
 //delete the user
@@ -33,7 +54,7 @@ restaurantSystem.controller('reportCtrl', function ($scope, $http,$rootScope,$lo
   // 3. Generar consulta en donde se pueda ver una comparación del total de
   // ventas de cada restaurante en un período en específico.
 
-  // 4. Generar una consulta en donde se ingrese como parámetros (opcionales) un rango 
+  // 4. Generar una consulta en donde se ingrese como parámetros (opcionales) un rango
   // de fechas, y un restaurante (también opcional, si no se envía se realiza a
   // todos los restaurantes) y esta retorne un análisis en donde compare en los 7
   // días de la semana qué ingrediente se vendió más, cual fue la ganancia
