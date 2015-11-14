@@ -4,25 +4,26 @@
 var restaurantSystem = angular.module('restaurantsControllers', []);
 
 restaurantSystem.controller('signinCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
-
-});
-restaurantSystem.controller('signupCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
-//new user
-  $scope.newClient=function(){
-    // var data={
-    //   idUsuario:1,
-    //   nombre:$scope.name,
-    //   apellido:$scope.lastName,
-    //   telefono:$scope.telphone,
-    //   cedula:11111111,
-    //   contrasenna:$scope.password
-    // };
-    alert("begin");
-    $http.post('/signup', $scope.client)
+  $scope.signin=function(){
+    $http.post('/login', $scope.client)
     .then(function successCallback(response) {
         // this callback will be called asynchronously
         // when the response is available
-        alert('welldone')
+        console.dir(response.data[0][0]);
+        var Id=response.data[0][0].Id;
+        var Tipo=response.data[0][0].Tipo;
+        if(Id==-1){
+          $scope.wrong=true;
+          $cookies.put('login','');
+        }else{
+          if(Tipo=='admin'){
+            $cookies.put('login','Admin');
+          }else{
+            $cookies.put('login','Client');
+          }
+          $cookies.put('userId',Id.toString());
+          $location.path('/')
+        }
       }, function errorCallback(response) {
         // called asynchronously if an error occurs
         // or server returns response with an error status.
@@ -30,13 +31,82 @@ restaurantSystem.controller('signupCtrl', function ($scope, $http,$rootScope,$lo
       });
   }
 });
+restaurantSystem.controller('signupCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
+  $scope.newClient=function(){
+    alert("begin");
+    $http.post('/signup', $scope.client)
+    .then(function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+        $location.path('/');
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        alert('It wasn\'t posible to create this user')
+        $location.path('/');
+      });
+  }
+});
 restaurantSystem.controller('clientDetailsCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
-//delete the user
-//modify the data
+  //delete the user
+  //modify the data
+  //request to all the data and initialize it
+  $scope.client={}
+  $scope.client.dbid=$rootScope.id;
+  console.log($scope.client.dbid);
+  $http.post('/client', $scope.client)
+  .then(function successCallback(response) {
+      // this callback will be called asynchronously
+      // when the response is available
+      console.dir(response);
+      if(response.data[0][0].length!=0){
+        $scope.client.name=data(response).Nombre;
+        $scope.client.lastName=data(response).Apellido;
+        $scope.client.id=data(response).Cedula;
+        $scope.client.telphone=data(response).Telefono;
+        $scope.client.dbid=data(response).Id;
+      }
+    }, function errorCallback(response) {
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+      alert('error on storage')
+    });
+
+  $scope.saveChanges=function(){
+    $http.post('/updateClient', $scope.client)
+    .then(function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+        $location.path('/');
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        alert('error on storage')
+      });
+  }
+  $scope.deleteUser=function(){
+    alert($scope.client.dbid)
+    $http.post('/deleteClient', $scope.client)
+    .then(function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+        $location.path('/logout');
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        alert('error on storage')
+      });
+  }
 });
 restaurantSystem.controller('addIngredientCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
-});
-restaurantSystem.controller('ingredientDetailsCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
+  $scope.add=function(){
+    var fileVal=document.getElementById("abc");
+    var finalstr;
+    var res = fileVal.value.slice(12);
+    finalstr = "app/img/Ingredients/" + res; //this is the url to store in the db
+    var form=document.getElementById("uploadForm");
+    form.submit();
+  }
 });
 restaurantSystem.controller('ingredientDetailsCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
   //show and change the amount of that ingredient
@@ -64,3 +134,9 @@ restaurantSystem.controller('viewRestaurantCtrl', function ($scope, $http,$rootS
 });
 restaurantSystem.controller('newRestaurantCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
 });
+restaurantSystem.controller('inventoryCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
+});
+
+var data=function(obj){
+  return obj.data[0][0];
+}

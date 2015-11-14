@@ -17,14 +17,22 @@
 
     <div class="container">
       <div class="header clearfix">
+        <h3 class="text-muted">Restaurants</h3>
         <nav>
           <ul class="nav nav-pills pull-right">
-            <li role="presentation" class="active"><a href="#">Home</a></li>
-            <li role="presentation"><a href="#">About</a></li>
-            <li role="presentation"><a href="#">Contact</a></li>
+            <li role="presentation" class="active"><a href="#/">Home</a></li>
+            <li ng-hide="isLogged" role="presentation"><a href="#/signin">Sign in</a></li>
+            <li ng-show="isAdmin" role="presentation"><a href="#/billing">New billing</a></li>
+            <li ng-show="isAdmin" role="presentation"><a href="#/addIngredient">Add Ingredient</a></li>
+            <li ng-show="isAdmin" role="presentation"><a href="#/billing">View reports</a></li>
+            <li ng-show="isAdmin" role="presentation"><a href="#/inventory">Inventory</a></li>
+            <li ng-show="isAdmin" role="presentation"><a href="#/newRestaurant">New Restaurant</a></li>
+            <li ng-if="!isAdmin && isLogged" role="presentation"><a href="#/clientDetails">Edit Profile</a></li>
+            <li ng-show="isLogged" role="presentation"><a href="#/logout">Log out</a></li>
+
+
           </ul>
         </nav>
-        <h3 class="text-muted">Project name</h3>
       </div>
 
       <div class="view-container ">
@@ -32,7 +40,7 @@
       </div>
 
       <footer class="footer">
-        <p>&copy; Company 2014</p>
+        <p>&copy; TEC 2015</p>
       </footer>
 
     </div> <!-- /container -->
