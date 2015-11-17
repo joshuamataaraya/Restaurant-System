@@ -137,10 +137,10 @@ restaurantSystem.controller('addIngredientCtrl', function ($scope, $http,$rootSc
     }
 
     $scope.ingredient.user = $rootScope.id;
-    for(var rest in $scope.restaurants){
-      if (rest.isSelected==true){
-      alert('Here')
-        $scope.ingredient.restaurant=rest.id;
+    var i;
+    for(i=0;i<$scope.restaurants.length;i++){
+      if ($scope.restaurants[i].isSelected==true){
+        $scope.ingredient.restaurant=$scope.restaurants[i].id;
         $http.post('/addIngredient', $scope.ingredient)
         .then(function successCallback(response) {
             // this callback will be called asynchronously
@@ -292,7 +292,7 @@ restaurantSystem.controller('viewRestaurantCtrl', function ($scope, $http,$rootS
         var res = fileVal.value.slice(12);
         finalstr = "app/img/Ingredients/" + res; //this is the url to store in the db
         ingredient.url=finalstr;
-        var form=document.getElementById("ingredient.id");
+        var form=document.getElementById(ingredient.id);
         form.submit();
         alert('Subido')
       }else{
@@ -312,6 +312,116 @@ restaurantSystem.controller('viewRestaurantCtrl', function ($scope, $http,$rootS
         });
 
     }
+
+    $scope.info={};
+    $scope.newBilling=function(rest){
+      $http.post('/getMenu',rest)
+      .then(function successCallback(response) {
+          // this callback will be called asynchronously
+          // when the response is available
+          console.dir(response);
+          if(response.data[0].length!=0){
+            var i;
+            $scope.dishes=[];
+            for(i=0;i<response.data[0].length;i++){
+              var dishAux={};
+              dishAux.id=response.data[0][i].Id;
+              dishAux.name=response.data[0][i].Nombre;
+              dishAux.quantity=0;
+              $scope.dishes.push(dishAux);
+            }
+          }
+        }, function errorCallback(response) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+          alert('error on storage')
+        });
+        $scope.toShow='bill';
+
+        $http.post('/getClients')
+        .then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            console.dir(response);
+            if(response.data[0].length!=0){
+              var i;
+              $scope.clients=[];
+              for(i=0;i<response.data[0].length;i++){
+                var client={};
+                client.dbid=response.data[0][i].Id;
+                client.name=response.data[0][i].Nombre;
+                client.lastName=response.data[0][i].Apellido;
+                client.telephone=response.data[0][i].Telefono;
+                client.id=response.data[0][i].Cedula;
+                $scope.clients.push(client);
+              }
+            }
+          }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            alert('error on storage')
+          });
+    }
+    $scope.inc=function(obj){
+      obj.quantity++;
+    }
+    $scope.dec=function(obj){
+      if(obj.quantity>0){
+        obj.quantity--;
+      }
+    }
+    $scope.bill=function(){
+      var orderNumber;
+      console.dir($scope.info);
+      $http.post('/insertOrder',$scope.info)
+      .then(function successCallback(response) {
+          // this callback will be called asynchronously
+          // when the response is available
+          console.dir(response);
+          if(response.data[0].length!=0){
+            var i;
+            for(i=0;i<response.data[0].length;i++){
+               orderNumber=response.data[0][i].NumeroOrden;
+            }
+          }
+          var i;
+           for(i=0;i<$scope.dishes.length;i++){
+             if($scope.dishes[i].quantity>0){
+               var info={};
+               info.idOrder=orderNumber;
+               info.idDish=$scope.dishes[i].id;
+               info.quantity=$scope.dishes[i].quantity;
+               $http.post('/addDishInOrder',info)
+               .then(function successCallback(response) {
+                   // this callback will be called asynchronously
+                   // when the response is available
+                   console.dir(response);
+                 }, function errorCallback(response) {
+                   // called asynchronously if an error occurs
+                   // or server returns response with an error status.
+                   alert('error on storage')
+                 });
+             }
+           }
+           $scope.info.idUser=$rootScope.id;
+           $scope.info.idOrder=orderNumber;
+           $http.post('/endOrder',$scope.info)
+           .then(function successCallback(response) {
+               // this callback will be called asynchronously
+               // when the response is available
+               console.dir(response);
+             }, function errorCallback(response) {
+               // called asynchronously if an error occurs
+               // or server returns response with an error status.
+               alert('error on storage')
+             });
+        }, function errorCallback(response) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+          alert('error on storage')
+        });
+     }
+
 });
 restaurantSystem.controller('newRestaurantCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
 });

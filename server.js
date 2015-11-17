@@ -249,6 +249,79 @@ app.post('/saveChanges', function(req, res) {
     res.end();
 });
 
+app.post('/insertOrder', function(req, res) {
+  console.log('Body add dish:');
+  console.dir(req.body);
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pMetodoPago', sql.VarChar(50), req.body.payMethod);
+        request.input('IdCliente', sql.Int, req.body.idClient);
+        request.execute('sp_insertarOrden', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
+
+app.post('/getClients', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.execute('sp_consultarClientes', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
+app.post('/addDishInOrder', function(req, res) {
+  console.log('Body add dish:');
+  console.dir(req.body);
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdOrden', sql.Int, req.body.idOrder);
+        request.input('pIdPlatillo', sql.Int, req.body.idDish);
+        request.input('pCantidad', sql.Int, req.body.quantity);
+        request.execute('sp_insertarPlatoOrden', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+app.post('/endOrder', function(req, res) {
+  console.log('Body end order:');
+  console.dir(req.body);
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdUsuario', sql.Int, req.body.idUser);
+        request.input('pIdOrden', sql.Int, req.body.idOrder);
+        request.execute('sp_finalizarOrden', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
 app.get('/',function(req,res){
     res.sendFile(__dirname + "/index.html");
 });

@@ -9,6 +9,7 @@
         <td>{{ rest.category }}</td>
         <td>{{ rest.schedule }}</td>
         <td>
+          <button class="btn" type="button" ng-show="isAdmin" ng-click="newBilling(rest)">New Billing</button>
           <button class="btn" type="button" ng-click="viewMenu(rest)">View Menu</button>
           <button class="btn" type="button" ng-show="isAdmin" ng-click="viewInventory(rest)">View Inventory</button>
         </td>
@@ -57,7 +58,7 @@
         <td>
           <img ng-src="{{ingredient.url}}"/>
           <form class   =   "form-signin"
-                id      =   "ingredient.id"
+                id      =   "{{ingredient.id}}"
                 enctype =   "multipart/form-data"
                 action  =   "/api/photo"
                 method  =   "post">
@@ -82,4 +83,37 @@
         </td>
       </tr>
   </table>
+</div>
+
+
+<div class="table-responsive" ng-if="toShow=='bill'">
+  <h2 class="form-signin-heading">New Billing</h2>
+  <h4 class="form-signin-heading">Pay Method:</h4>
+  <select class="form-control" autofocus="0" ng-model="info.payMethod">
+    <option value="Efectivo">Cash</option>
+    <option value="Tarjeta">Card</option>
+  </select>
+
+  <h4 class="form-signin-heading">Client:</h4>
+  <select class="form-control" autofocus="0" ng-model="info.idClient">
+    <option ng-repeat="client in clients" value="{{client.dbid}}">{{client.name}}, {{client.lastName}}</option>
+  </select>
+
+
+  <h4 class="form-signin-heading">Dishes:</h4>
+  <table  class="table">
+      <th>Name</th>
+      <th>Quantity</th>
+      <tr ng-repeat="dish in dishes">
+        <td>
+          {{dish.name}}
+        </td>
+        <td>
+          <label >{{dish.quantity}}</label>
+          <button type="button" ng-click="inc(dish)">+</button>
+          <button type="button" ng-click="dec(dish)">-</button>
+        </td>
+      </tr>
+  </table>
+  <button class="btn" type="button" ng-click="bill()">Bill</button>
 </div>
