@@ -62,11 +62,10 @@
                 enctype =   "multipart/form-data"
                 action  =   "/api/photo"
                 method  =   "post">
-
-          </form>
           <span class="btn btn-default btn-file">
-              Browse <input class="form-control" type="file" name="userPhoto" id="abc"  ng-model = "val" value="123"/>
+              Browse <input class="form-control" type="file" name="userPhoto" id="{{'abc' + ingredient.id}}"  ng-model = "val" value="123"/>
           </span>
+          </form>
 
         </td>
         <td>

@@ -267,7 +267,7 @@ restaurantSystem.controller('viewRestaurantCtrl', function ($scope, $http,$rootS
     }
 
     $scope.saveChange=function(ingredient){
-      var fileVal=document.getElementById("abc");
+      var fileVal=document.getElementById('abc'+ingredient.id);
       if(fileVal != undefined){
         var finalstr;
         var res = fileVal.value.slice(12);
