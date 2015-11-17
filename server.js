@@ -322,6 +322,51 @@ app.post('/endOrder', function(req, res) {
     connection.on('error', function(err) {console.log(err);});
 });
 
+app.post('/addRestaurant', function(req, res) {
+  console.log(req.body.name);
+  console.log(req.body.schedule);
+  console.log(req.body.cuadra);
+  console.log(req.body.category);
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pNombre', sql.VarChar(50), req.body.name);
+        request.input('pHorario', sql.VarChar(50), req.body.schedule);
+        request.input('pCategoria', sql.Int, req.body.category);
+        request.input('pCuadra', sql.Int, req.body.cuadra);
+        request.execute('sp_insertarRestaurante', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+    res.end();
+});
+app.post('/getCuadras', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.execute('sp_consultarCuadras', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+app.post('/getCategories', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.execute('sp_consultarCategorias', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
 app.get('/',function(req,res){
     res.sendFile(__dirname + "/index.html");
 });

@@ -424,7 +424,59 @@ restaurantSystem.controller('viewRestaurantCtrl', function ($scope, $http,$rootS
 
 });
 restaurantSystem.controller('newRestaurantCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
-});
+  $http.post('/getCuadras')
+  .then(function successCallback(response) {
+      // this callback will be called asynchronously
+      // when the response is available
+      console.dir(response);
+      if(response.data[0].length != 0){
+        var i;
+        for(i=0;i<response.data[0].length;i++){
+          var select = document.getElementById("selectCuadra");
+          var option = document.createElement("option");
+          option.text = "Cuadra "+response.data[0][i].Id;
+          option.value = response.data[0][i].Id;
+          select.add(option);
+        }
+      }
+    }, function errorCallback(response) {
+      // called asynchronously if an error occurs
+      // or server returns response with an error status.
+      alert('error on storage')
+    });
+    $http.post('/getCategories')
+    .then(function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+        console.dir(response);
+        if(response.data[0].length != 0){
+          var i;
+          for(i=0;i<response.data[0].length;i++){
+            var select = document.getElementById("selectCategory");
+            var option = document.createElement("option");
+            option.text = response.data[0][i].Nombre;
+            option.value = response.data[0][i].Id;
+            select.add(option);
+          }
+        }
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        alert('error on storage')
+      });
+      $scope.saveRestaurant=function(){
+        $http.post('/addRestaurant', $scope.rest)
+        .then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            $location.path('/');
+          }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            alert('error on storage')
+          });
+      }
+  });
 
 
 var data=function(obj){
