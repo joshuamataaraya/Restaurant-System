@@ -187,6 +187,20 @@ restaurantSystem.controller('viewRestaurantCtrl', function ($scope, $http,$rootS
     });
     $scope.toShow='restaurants';
 
+    $scope.backDish=function(){
+      $scope.toShow='restaurants';
+    }
+    $scope.backIngredient=function(){
+      $scope.toShow='dish';
+    }
+
+    $scope.backInventory=function(){
+      $scope.toShow='restaurants';
+    }
+    $scope.backBill=function(){
+      $scope.toShow='restaurants';
+    }
+
     $scope.viewMenu=function(rest){
       $http.post('/getMenu',rest)
       .then(function successCallback(response) {
@@ -200,6 +214,7 @@ restaurantSystem.controller('viewRestaurantCtrl', function ($scope, $http,$rootS
               var dishAux={};
               dishAux.id=response.data[0][i].Id;
               dishAux.name=response.data[0][i].Nombre;
+              dishAux.url=response.data[0][i].Foto;
               $scope.dishes.push(dishAux);
             }
           }

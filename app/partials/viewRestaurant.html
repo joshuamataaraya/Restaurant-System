@@ -18,10 +18,15 @@
 </div>
 
 <div class="table-responsive" ng-if="toShow=='dish'">
+  <button class="btn" type="button" ng-click="backDish()">Back</button>
   <table  class="table">
+      <th>Image</th>
       <th>Name</th>
       <th>Options</th>
       <tr ng-repeat="dish in dishes">
+        <td>
+          <img ng-src="{{dish.url}}"/>
+        </td>
         <td>
           {{dish.name}}
         </td>
@@ -33,6 +38,7 @@
 </div>
 
 <div class="table-responsive" ng-if="toShow=='ingredient'">
+  <button class="btn" type="button" ng-click="backIngredient()">Back</button>
   <table  class="table">
       <th>Image</th>
       <th>Name</th>
@@ -48,6 +54,7 @@
 </div>
 
 <div class="table-responsive" ng-if="toShow=='inventory'">
+  <button class="btn" type="button" ng-click="backInventory()">Back</button>
   <table  class="table">
       <th>Image</th>
       <th>Name</th>
@@ -87,6 +94,7 @@
 
 
 <div class="table-responsive" ng-if="toShow=='bill'">
+  <button class="btn" type="button" ng-click="backBill()">Back</button>
   <h2 class="form-signin-heading">New Billing</h2>
   <h4 class="form-signin-heading">Pay Method:</h4>
   <select class="form-control" autofocus="0" ng-model="info.payMethod">
