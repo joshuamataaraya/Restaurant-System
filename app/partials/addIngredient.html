@@ -1,8 +1,31 @@
-<form id        =  "uploadForm"
-     enctype   =  "multipart/form-data"
-     action    =  "/api/photo"
-     method    =  "post"
->
-<input type="file" name="userPhoto" id="abc"  ng-model = "val" value="123" class="btn btn-default btn-lg"/>
-</form>
-<button type="button" name="button" ng-click="add()">Add Ingredient</button>
+<div class="container">
+  <form class   =   "form-signin"
+        id      =   "uploadForm"
+        enctype =   "multipart/form-data"
+        action  =   "/api/photo"
+        method  =   "post">
+    <h2 class="form-signin-heading">Add ingredient</h2>
+    <input type="text" class="form-control" placeholder="Name" ng-model="ingredient.name" required autofocus>
+    <input type="text" class="form-control" placeholder="Restaurant" ng-model="ingredient.restaurant" required autofocus>
+    <input type="text" class="form-control" placeholder="Price" ng-model="ingredient.price" required autofocus>
+    <input type="text" class="form-control" placeholder="Quantity" ng-model="ingredient.quantity" required autofocus>
+    <p>
+    </p>
+    <h3 class="form-signin-heading">Select the restaurants:</h3>
+    <div ng-repeat="rest in restaurants" class="form-control">
+      <label>{{rest.name}}
+        <input type="checkbox" ng-model="rest.isSelected">
+      </label>
+        <label> {{rest.category}}</label>
+    </div>
+
+    <h4 >Imagen</h4>
+    <input type="file" name="userPhoto" id="abc"  ng-model = "val" value="123"/>
+  </form>
+</div> <!-- /container -->
+
+<div class="container">
+  <form class="form-signin">
+    <button class="btn btn-lg   btn-primary btn-block" type="submit" name="button" ng-click="add()">Add Ingredient</button>
+  </form>
+  </div> <!-- /container -->

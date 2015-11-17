@@ -27,9 +27,9 @@ app.use(multer({ dest: './app/img/Ingredients',
 
 //this is the db configuration for connection
 var config = {
-    user: 'restaurants',
-    password: '1234',
-    server: 'localhost', // You can use 'localhost\\instance' to connect to named instance
+    user: 'admin',
+    password: '12345678',
+    server: '192.168.0.107', // You can use 'localhost\\instance' to connect to named instance
     database: 'Restaurantes'
 }
 
@@ -98,7 +98,6 @@ app.post('/client', function(req, res) {
         });
     });
     connection.on('error', function(err) {console.log(err);});
-    //res.end();
 });
 app.post('/updateClient', function(req, res) {
     var connection = new sql.Connection(config, function(err) {
@@ -128,7 +127,7 @@ app.post('/deleteClient', function(req, res) {
         var request = new sql.Request(connection);
         request.input('pIdUsuario', 1);
         request.input('pIdCliente', sql.Int, req.body.dbid);
-        
+
         request.execute('sp_eliminarCliente', function(err, recordsets, returnValue) {
             // ... error checks
             console.log("EROR:");
@@ -139,6 +138,59 @@ app.post('/deleteClient', function(req, res) {
     });
     connection.on('error', function(err) {console.log(err);});
     res.end();
+});
+
+app.post('/addIngredient', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdUsuario', sql.Int, req.body.user);
+        request.input('pIdRestaurante', sql.Int, req.body.restaurant);
+        request.input('pNombre', sql.VarChar(50), req.body.name);
+        request.input('pPrecio', sql.Money, req.body.price);
+        request.input('pCantidad', sql.Int, req.body.quantity);
+        request.input('pFoto', sql.VarChar(sql.MAX), req.body.url);
+
+
+        request.execute('sp_insertarIngrediente', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+    res.end();
+});
+app.post('/getRestaurants', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.execute('sp_consultarRestaurantes', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
+app.post('/getInventory', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdRestaurante', sql.Int, req.body.id);
+        request.execute('sp_consultarIngredientes', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
 });
 
 app.get('/',function(req,res){

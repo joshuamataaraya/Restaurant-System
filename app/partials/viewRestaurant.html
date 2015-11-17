@@ -1,1 +1,40 @@
-View restaurants and click on them to see the menu
+<div class="table-responsive" ng-if="toShow=='restaurants'">
+  <table  class="table">
+      <th>Name</th>
+      <th>Category</th>
+      <th>Schedule</th>
+      <th>Options</th>
+      <tr ng-repeat="rest in restaurants">
+        <td>{{ rest.name }}</td>
+        <td>{{ rest.category }}</td>
+        <td>{{ rest.schedule }}</td>
+        <td>
+          <button class="btn" type="button" ng-click="viewMenu()">View Menu</button>
+          <button class="btn" type="button" ng-show="isAdmin" ng-click="viewInventory(rest)">View Inventory</button>
+        </td>
+      </tr>
+  </table>
+</div>
+
+<div class="table-responsive" ng-if="toShow=='ingredient'">
+  <table  class="table">
+      <th>Name</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Options</th>
+      <tr ng-repeat="ingredient in ingredients">
+        <td>
+          <input type="text" class="form-control" placeholder="Name" ng-model="ingredient.name" required autofocus>
+        </td>
+        <td>
+          <input type="text" class="form-control" placeholder="Price" ng-model="ingredient.price" required autofocus>
+        </td>
+        <td>
+          <input type="text" class="form-control" placeholder="Quantity" ng-model="ingredient.quantity" required autofocus>
+        </td>
+        <td>
+          <button class="btn" type="button" ng-click="saveChange(ingredient)">Save changes</button>
+        </td>
+      </tr>
+  </table>
+</div>
