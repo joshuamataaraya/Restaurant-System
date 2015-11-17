@@ -159,25 +159,6 @@ restaurantSystem.controller('addIngredientCtrl', function ($scope, $http,$rootSc
 restaurantSystem.controller('ingredientDetailsCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
   //show and change the amount of that ingredient
 });
-restaurantSystem.controller('billingCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
-});
-restaurantSystem.controller('reportCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
-  //1. Ver ventas y la ganancia de restaurantes en un día en específico.
-
-  // 2. Generar una consulta en donde se ingrese un ingrediente en específico y muestre
-  // todas las ventas realizadas de platillos en donde se encuentre ese ingrediente,
-  //  a esta consulta se le puede enviar como parámetro el restaurante o un rango de fechas.
-  //   Estos parámetros pueden ser opcionales.
-
-  // 3. Generar consulta en donde se pueda ver una comparación del total de
-  // ventas de cada restaurante en un período en específico.
-
-  // 4. Generar una consulta en donde se ingrese como parámetros (opcionales) un rango
-  // de fechas, y un restaurante (también opcional, si no se envía se realiza a
-  // todos los restaurantes) y esta retorne un análisis en donde compare en los 7
-  // días de la semana qué ingrediente se vendió más, cual fue la ganancia
-  // (suma de todos los platillos que incluyen dicho ingrediente) obtenida por esas ventas.
-});
 restaurantSystem.controller('viewRestaurantCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
   $scope.restaurants=[];
   $scope.ingredients=[];
@@ -311,6 +292,23 @@ restaurantSystem.controller('viewRestaurantCtrl', function ($scope, $http,$rootS
           alert('error on storage')
         });
 
+    }
+    $scope.delete=function(ingredient){
+      var data={};
+      data.user=$rootScope.id;
+      data.ingredient=ingredient.id;
+      console.dir(data);
+      $http.post('/deleteIngredient',data)
+      .then(function successCallback(response) {
+          // this callback will be called asynchronously
+          // when the response is available
+          console.dir(response);
+        }, function errorCallback(response) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+          alert('error on storage')
+        });
+        $location.path('/')
     }
 
     $scope.info={};
@@ -470,6 +468,198 @@ restaurantSystem.controller('newRestaurantCtrl', function ($scope, $http,$rootSc
             // this callback will be called asynchronously
             // when the response is available
             $location.path('/');
+          }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            alert('error on storage')
+          });
+      }
+  });
+  restaurantSystem.controller('reportCtrl', function ($scope, $http,$rootScope,$location,$cookies) {
+    //1. Ver ventas y la ganancia de restaurantes en un día en específico.
+
+    // 2. Generar una consulta en donde se ingrese un ingrediente en específico y muestre
+    // todas las ventas realizadas de platillos en donde se encuentre ese ingrediente,
+    //  a esta consulta se le puede enviar como parámetro el restaurante o un rango de fechas.
+    //   Estos parámetros pueden ser opcionales.
+
+    // 3. Generar consulta en donde se pueda ver una comparación del total de
+    // ventas de cada restaurante en un período en específico.
+
+    // 4. Generar una consulta en donde se ingrese como parámetros (opcionales) un rango
+    // de fechas, y un restaurante (también opcional, si no se envía se realiza a
+    // todos los restaurantes) y esta retorne un análisis en donde compare en los 7
+    // días de la semana qué ingrediente se vendió más, cual fue la ganancia
+    // (suma de todos los platillos que incluyen dicho ingrediente) obtenida por esas ventas.
+    $scope.restaurants=[];
+    $scope.ingredients=[];
+    $scope.info={};
+    $http.post('/getRestaurants')
+    .then(function successCallback(response) {
+        // this callback will be called asynchronously
+        // when the response is available
+        console.dir(response);
+        if(response.data[0].length!=0){
+          var i;
+          for(i=0;i<response.data[0].length;i++){
+            var restAux={};
+            restAux.id=response.data[0][i].Id;
+            restAux.name=response.data[0][i].Nombre;
+            restAux.category=response.data[0][i].Categoria;
+            restAux.isSelected=false;
+            $scope.restaurants.push(restAux);
+          }
+        }
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        alert('error on storage')
+      });
+
+      $http.post('/getAllIngredients')
+      .then(function successCallback(response) {
+          // this callback will be called asynchronously
+          // when the response is available
+          console.dir(response);
+          if(response.data[0].length!=0){
+            var i;
+            $scope.ingredients=[];
+            for(i=0;i<response.data[0].length;i++){
+              var ingredientAux={};
+              ingredientAux.id=response.data[0][i].Id;
+              ingredientAux.name=response.data[0][i].Nombre;
+              ingredientAux.url=response.data[0][i].Foto;
+
+              $scope.ingredients.push(ingredientAux);
+            }
+          }
+        }, function errorCallback(response) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+          alert('error on storage')
+        });
+      $scope.incomes=function(){
+        if($scope.info.restaurant!=undefined){
+          alert($scope.info.restaurant)
+          $scope.info.idRest=$scope.info.restaurant;
+        }else{
+          $scope.info.idRest=undefined;
+        }
+        $http.post('/incomes',$scope.info)
+        .then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            console.dir(response);
+            if(response.data[0].length!=0){
+              var i;
+              $scope.ingredients=[];
+              for(i=0;i<response.data[0].length;i++){
+                var restAux={};
+                restAux.name=response.data[0][i].Nombre;
+                restAux.income=response.data[0][i].Ganancia;
+                $scope.restaurants.push(restAux);
+              }
+            }
+          }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            alert('error on storage')
+          });
+          $scope.toShow='incomes';
+      }
+      $scope.ingredientSales=function(){
+
+        $scope.toShow='ingredientSales';
+        var data={};
+        data.idUser=$rootScope.id;
+        if($scope.info.restaurant!=undefined){
+          alert($scope.info.restaurant)
+          data.idRest=$scope.info.restaurant;
+        }else{
+          data.idRest=undefined;
+        }
+        if($scope.info.ingredient!=undefined){
+          data.idIngre=$scope.info.ingredient;
+        }else{
+          data.idIngre=undefined;
+        }
+        data.date=$scope.info.date;
+        data.date2=$scope.info.date2;
+
+        $http.post('/ingredientSales',data)
+        .then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            console.dir(response);
+            if(response.data[0].length!=0){
+              var i;
+              $scope.information=[];
+              for(i=0;i<response.data[0].length;i++){
+                var info={};
+                info.orderNumber=response.data[0][i].NumeroOrden;
+                info.ingredient=response.data[0][i].NombreIngrediente;
+                info.dishName=response.data[0][i].NombrePlatillo;
+                info.date=response.data[0][i].Fecha;
+                info.restaurant=response.data[0][i].NombreRestaurante;
+                info.total=response.data[0][i].Total;
+                $scope.information.push(info);
+              }
+            }
+          }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            alert('error on storage')
+          });
+      }
+      $scope.allIncomes=function(){
+        $scope.toShow='allIncomes';
+        var data={};
+        data.date=$scope.info.date;
+        data.date2=$scope.info.date2;
+
+        $http.post('/allIncomes',data)
+        .then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            console.dir(response);
+            if(response.data[0].length!=0){
+              var i;
+              $scope.information=[];
+              for(i=0;i<response.data[0].length;i++){
+                var info={};
+                info.restaurant=response.data[0][i].Restaurante;
+                info.sales=response.data[0][i].Ventas;
+                $scope.information.push(info);
+              }
+            }
+          }, function errorCallback(response) {
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+            alert('error on storage')
+          });
+      }
+      $scope.weeklySales=function(){
+        $scope.toShow='allIncomes';
+        var data={};
+        data.date=$scope.info.date;
+        data.date2=$scope.info.date2;
+        data.idRest=$scope.info.restaurant;
+        $http.post('/weeklySales',data)
+        .then(function successCallback(response) {
+            // this callback will be called asynchronously
+            // when the response is available
+            console.dir(response);
+            if(response.data[0].length!=0){
+              var i;
+              $scope.information=[];
+              for(i=0;i<response.data[0].length;i++){
+                var info={};
+                info.day=response.data[0][i].Dia;
+                info.name=response.data[0][i].Nombre;
+                info.numDishes=response.data[0][i].NumPlatillos
+                $scope.information.push(info);
+              }
+            }
           }, function errorCallback(response) {
             // called asynchronously if an error occurs
             // or server returns response with an error status.

@@ -225,6 +225,21 @@ app.post('/getIngredients', function(req, res) {
     connection.on('error', function(err) {console.log(err);});
 });
 
+app.post('/getAllIngredients', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.execute('sp_consultarIngredientes', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
 app.post('/saveChanges', function(req, res) {
     var connection = new sql.Connection(config, function(err) {
         var request = new sql.Request(connection);
@@ -355,6 +370,7 @@ app.post('/getCuadras', function(req, res) {
     });
     connection.on('error', function(err) {console.log(err);});
 });
+
 app.post('/getCategories', function(req, res) {
     var connection = new sql.Connection(config, function(err) {
         var request = new sql.Request(connection);
@@ -365,6 +381,92 @@ app.post('/getCategories', function(req, res) {
         });
     });
     connection.on('error', function(err) {console.log(err);});
+});
+
+app.post('/incomes', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdRestaurante', sql.Int, req.body.idRest);
+        request.input('pFecha', sql.Date, req.body.date);
+        request.execute('sp_consultarGanancias', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
+app.post('/ingredientSales', function(req, res) {
+  console.log("SALES");
+  console.dir(req.body);
+  console.log(req.body.idUser);
+  console.log(req.body.idIngre);
+  console.log(req.body.idRest);
+  console.log(req.body.date);
+  console.log(req.body.date2);
+
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdUsuario', sql.Int, req.body.idUser);
+        request.input('pIdIngrediente', sql.Int, req.body.idIngre);
+        request.input('pIdRestaurante', sql.Int, req.body.idRest);
+        request.input('pFechaInicio', sql.Date, req.body.date);
+        request.input('pFechaFinal', sql.Date, req.body.date2);
+        request.execute('sp_consultarVentasIngrediente', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
+app.post('/allIncomes', function(req, res) {
+
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pFechaInicio', sql.Date, req.body.date);
+        request.input('pFechaFinal', sql.Date, req.body.date2);
+        request.execute('sp_consultarVentasTotales', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
+app.post('/weeklySales', function(req, res) {
+
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdRestaurante', sql.Int, req.body.idRest);
+        request.input('pFechaInicio', sql.Date, req.body.date);
+        request.input('pFechaFinal', sql.Date, req.body.date2);
+        request.execute('sp_consultarVentasSemana', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
+
+app.post('/deleteIngredient', function(req, res) {
+
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdUsuario', sql.Int, req.body.user);
+        request.input('pIdIngrediente', sql.Int, req.body.ingredient);
+        request.execute('sp_eliminarIngrediente', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.dir(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+    res.end();
 });
 
 app.get('/',function(req,res){

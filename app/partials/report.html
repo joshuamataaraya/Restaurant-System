@@ -1,1 +1,98 @@
-report
+<h2 class="form-signin-heading">Generate Reports </h2>
+<h4 class="form-signin-heading">Select a restaurant:</h4>
+<select class="form-control" autofocus="0" ng-model="info.restaurant">
+  <option ng-repeat="restaurant in restaurants" value="{{restaurant.id}}">{{restaurant.name}}, {{restaurant.category}}</option>
+</select>
+<h4 class="form-signin-heading">Select an ingredient</h4>
+<select class="form-control" autofocus="0" ng-model="info.ingredient">
+  <option ng-repeat="ingredient in ingredients" value="{{ingredient.id}}">{{ingredient.name}}</option>
+</select>
+<h4 class="form-signin-heading">Initial date: <input type="date" ng-model="info.date" name="bday"> </h4>
+
+<h4 class="form-signin-heading">Final date: <input type="date" name="bday" ng-model="info.date2"></h4>
+<button class="btn" type="button" ng-click="incomes()">Incomes</button>
+<button class="btn" type="button" ng-click="ingredientSales()">Ingredient sales</button>
+<button class="btn" type="button" ng-click="allIncomes()">All incomes</button>
+<button class="btn" type="button" ng-click="weeklySales()">Weekly sales</button>
+
+
+<div class="table-responsive" ng-if="toShow=='incomes'">
+  <table  class="table">
+      <th>Name</th>
+      <th>Income</th>
+      <tr ng-repeat="rest in restaurants" ng-if="rest.income!=undefined">
+        <td>
+          {{rest.name}}
+        </td>
+        <td>
+          {{rest.income}}
+        </td>
+      </tr>
+  </table>
+</div>
+
+<div class="table-responsive" ng-if="toShow=='ingredientSales'">
+  <table  class="table">
+      <th>Order Number</th>
+      <th>Ingrediente</th>
+      <th>Dish Name</th>
+      <th>Date</th>
+      <th>Restaurant Name</th>
+      <th>Total</th>
+      <tr ng-repeat="info in information">
+        <td>
+          {{info.orderNumber}}
+        </td>
+        <td>
+          {{info.ingredient}}
+        </td>
+        <td>
+          {{info.dishName}}
+        </td>
+        <td>
+          {{info.date}}
+        </td>
+        <td>
+          {{info.restaurant}}
+        </td>
+        <td>
+          {{info.total}}
+        </td>
+      </tr>
+  </table>
+</div>
+
+
+<div class="table-responsive" ng-if="toShow=='allIncomes'">
+  <table  class="table">
+      <th>Restaurant</th>
+      <th>Sales</th>
+      <tr ng-repeat="info in information">
+        <td>
+          {{info.restaurant}}
+        </td>
+        <td>
+          {{info.sales}}
+        </td>
+      </tr>
+  </table>
+</div>
+
+<div class="table-responsive" ng-if="toShow=='allIncomes'">
+  <table  class="table">
+      <th>Day</th>
+      <th>Name</th>
+      <th>Dishes</th>
+      <tr ng-repeat="info in information">
+        <td>
+          {{info.day}}
+        </td>
+        <td>
+          {{info.name}}
+        </td>
+        <td>
+          {{info.numDishes}}
+        </td>
+      </tr>
+  </table>
+</div>
