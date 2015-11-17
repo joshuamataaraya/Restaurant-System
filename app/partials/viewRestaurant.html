@@ -9,8 +9,23 @@
         <td>{{ rest.category }}</td>
         <td>{{ rest.schedule }}</td>
         <td>
-          <button class="btn" type="button" ng-click="viewMenu()">View Menu</button>
+          <button class="btn" type="button" ng-click="viewMenu(rest)">View Menu</button>
           <button class="btn" type="button" ng-show="isAdmin" ng-click="viewInventory(rest)">View Inventory</button>
+        </td>
+      </tr>
+  </table>
+</div>
+
+<div class="table-responsive" ng-if="toShow=='dish'">
+  <table  class="table">
+      <th>Name</th>
+      <th>Options</th>
+      <tr ng-repeat="dish in dishes">
+        <td>
+          {{dish.name}}
+        </td>
+        <td>
+          <button class="btn" type="button" ng-click="viewIngredients(dish)">View Ingredients</button>
         </td>
       </tr>
   </table>
@@ -18,11 +33,41 @@
 
 <div class="table-responsive" ng-if="toShow=='ingredient'">
   <table  class="table">
+      <th>Image</th>
+      <th>Name</th>
+      <tr ng-repeat="ingredient in ingredients">
+        <td>
+          <img ng-src="{{ingredient.url}}"/>
+        </td>
+        <td>
+          {{ingredient.name}}
+        </td>
+      </tr>
+  </table>
+</div>
+
+<div class="table-responsive" ng-if="toShow=='inventory'">
+  <table  class="table">
+      <th>Image</th>
       <th>Name</th>
       <th>Price</th>
       <th>Quantity</th>
       <th>Options</th>
       <tr ng-repeat="ingredient in ingredients">
+        <td>
+          <img ng-src="{{ingredient.url}}"/>
+          <form class   =   "form-signin"
+                id      =   "ingredient.id"
+                enctype =   "multipart/form-data"
+                action  =   "/api/photo"
+                method  =   "post">
+
+          </form>
+          <span class="btn btn-default btn-file">
+              Browse <input class="form-control" type="file" name="userPhoto" id="abc"  ng-model = "val" value="123"/>
+          </span>
+
+        </td>
         <td>
           <input type="text" class="form-control" placeholder="Name" ng-model="ingredient.name" required autofocus>
         </td>

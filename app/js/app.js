@@ -108,19 +108,6 @@ restaurantSystem.config(['$routeProvider',
         templateUrl: 'app/partials/newRestaurant.html',
         controller: 'newRestaurantCtrl'
       }).
-      when('/inventory', {
-        resolve:{
-          "check":function($rootScope,$cookies,$location){
-            update($rootScope,$cookies);
-            if(!$rootScope.isAdmin){
-              alert('This is available just for adminstrators')
-              $location.path('/signin');
-            }
-          }
-        },
-        templateUrl: 'app/partials/inventory.html',
-        controller: 'inventoryCtrl'
-      }).
       otherwise({
         redirectTo: '/'
       });

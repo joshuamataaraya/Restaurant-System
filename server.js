@@ -193,6 +193,62 @@ app.post('/getInventory', function(req, res) {
     connection.on('error', function(err) {console.log(err);});
 });
 
+app.post('/getMenu', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdRestaurante', sql.Int, req.body.id);
+        request.execute('sp_consultarMenuRestaurante', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
+app.post('/getIngredients', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdPlatillo', sql.Int, req.body.id);
+        request.execute('sp_consultarIngredientesPlatillo', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+            res.json(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+});
+
+app.post('/saveChanges', function(req, res) {
+    var connection = new sql.Connection(config, function(err) {
+        var request = new sql.Request(connection);
+        request.input('pIdUsuario', sql.Int, req.body.user);
+        request.input('pIdIngrediente', sql.Int, req.body.id  );
+        request.input('pIdRestaurante', sql.Int, req.body.idRest);
+        request.input('pNombre', sql.VarChar(50), req.body.name);
+        request.input('pCantidad', sql.Int, req.body.quantity);
+        request.input('pPrecio', sql.Money, req.body.price);
+        request.input('pFoto', sql.VarChar(sql.MAX), req.body.url);
+
+
+        request.execute('sp_modificarIngrediente', function(err, recordsets, returnValue) {
+            // ... error checks
+            console.log("EROR:");
+            console.log(err);
+            console.log("RECORDSETS:");
+            console.dir(recordsets);
+        });
+    });
+    connection.on('error', function(err) {console.log(err);});
+    res.end();
+});
+
 app.get('/',function(req,res){
     res.sendFile(__dirname + "/index.html");
 });
